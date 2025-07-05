@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ควบคุมอุปกรณ์</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .slider {
+      width: 80%;
+      margin: 20px auto;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #16a085;
+    }
+    .counts {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 40%;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛠️ ควบคุม Servo</h1>
+  <p>ปรับมุมเซอร์โว:</p>
+  <input type="range" min="0" max="180" value="90" oninput="updateAngle(this.value)" class="slider"/>
+  <p>มุมปัจจุบัน: <span id="angle">90</span>°</p>
+
+  <div class="status" id="status">สถานะ: ...</div>
+
+  <div class="counts">
+    <div class="box">
+      <h3>โลหะ</h3>
+      <p id="metal">0</p>
+    </div>
+    <div class="box">
+      <h3>อโลหะ</h3>
+      <p id="nonmetal">0</p>
+    </div>
+  </div>
+
+  <script>
+    const TOKEN = "0DjU0Mbq5RxR4_obV9Xa05K4ckX9jmv2";
+    const API = "https://blynk.cloud/external/api";
+
+    function updateAngle(value) {
+      document.getElementById("angle").innerText = value;
+      fetch(${API}/update?token=${TOKEN}&V1=${value});
+    }
+
+    function getData() {
+      fetch(${API}/get?token=${TOKEN}&V0).then(r => r.text()).then(d => document.getElementById("status").innerText = "สถานะ: " + d);
+      fetch(${API}/get?token=${TOKEN}&V2).then(r => r.text()).then(d => document.getElementById("metal").innerText = d);
+      fetch(${API}/get?token=${TOKEN}&V3).then(r => r.text()).then(d => document.getElementById("nonmetal").innerText = d);
+    }
+
+    setInterval(getData, 2000);
+  </script>
+</body>
+</html>
